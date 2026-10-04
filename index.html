@@ -679,12 +679,15 @@
       display: none;
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(5px);
+      background: rgba(0, 0, 0, 0.78);
+      backdrop-filter: blur(6px);
       z-index: 1000;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      padding: 16px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      cursor: pointer;
     }
 
     .modal-overlay.active {
@@ -694,16 +697,21 @@
     .modal-box {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 16px;
+      border-radius: 18px;
       width: 100%;
       max-width: 540px;
-      padding: 24px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      padding: 22px;
+      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.7);
       animation: modalFadeIn 0.2s ease-out;
+      cursor: default;
+      max-height: calc(100vh - 36px);
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
     }
 
     @keyframes modalFadeIn {
-      from { opacity: 0; transform: scale(0.95); }
+      from { opacity: 0; transform: scale(0.96); }
       to { opacity: 1; transform: scale(1); }
     }
 
@@ -711,13 +719,14 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      margin-bottom: 14px;
       border-bottom: 1px solid var(--card-border);
       padding-bottom: 12px;
+      flex-shrink: 0;
     }
 
     .modal-header h3 {
-      font-size: 1.25rem;
+      font-size: 1.2rem;
       color: #fff;
       display: flex;
       align-items: center;
@@ -725,23 +734,51 @@
     }
 
     .modal-close-btn {
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      font-size: 1.5rem;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--card-border);
+      color: #cbd5e1;
+      font-size: 1.4rem;
       cursor: pointer;
       line-height: 1;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      flex-shrink: 0;
     }
 
     .modal-close-btn:hover {
+      background: rgba(244, 63, 94, 0.25);
+      border-color: #f43f5e;
       color: #fff;
+      transform: scale(1.08);
+    }
+
+    /* Scrollable body for modals */
+    .modal-body-scroll {
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-right: 6px;
+      flex: 1;
+      overscroll-behavior: contain;
+    }
+
+    .modal-body-scroll::-webkit-scrollbar {
+      width: 5px;
+    }
+    .modal-body-scroll::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
     }
 
     .modal-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      margin-bottom: 18px;
+      gap: 12px;
+      margin-bottom: 14px;
     }
 
     .modal-field.full {
@@ -752,7 +789,7 @@
       display: block;
       font-size: 0.85rem;
       color: var(--text-muted);
-      margin-bottom: 6px;
+      margin-bottom: 5px;
       font-weight: 500;
     }
 
@@ -774,27 +811,71 @@
       box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.2);
     }
 
+    /* Collapsible Accordion for Tips */
+    .modal-accordion {
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      margin-top: 12px;
+      overflow: hidden;
+      font-size: 0.84rem;
+    }
+
+    .modal-accordion summary {
+      padding: 10px 14px;
+      cursor: pointer;
+      color: var(--accent-amber);
+      font-weight: 600;
+      user-select: none;
+      outline: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+
+    .modal-accordion summary:hover {
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .modal-accordion-content {
+      padding: 0 14px 12px 14px;
+      color: var(--text-muted);
+      line-height: 1.55;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      margin-top: 6px;
+      padding-top: 8px;
+    }
+
     .modal-actions {
       display: flex;
       justify-content: flex-end;
-      gap: 10px;
-      margin-top: 20px;
+      gap: 8px;
+      margin-top: 14px;
+      border-top: 1px solid var(--card-border);
+      padding-top: 14px;
+      flex-shrink: 0;
     }
 
     .modal-btn {
       padding: 10px 18px;
-      border-radius: 8px;
-      font-size: 0.9rem;
+      border-radius: 9px;
+      font-size: 0.88rem;
       font-weight: 600;
       cursor: pointer;
       font-family: inherit;
       border: none;
       transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
     }
 
     .modal-btn.primary {
       background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
       color: #0f172a;
+      font-weight: 700;
     }
 
     .modal-btn.primary:hover {
@@ -803,7 +884,13 @@
     }
 
     .modal-btn.secondary {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--card-border);
+      color: #e2e8f0;
+    }
+
+    .modal-btn.secondary:hover {
+      background: rgba(255, 255, 255, 0.14);
       color: #fff;
     }
 
@@ -948,6 +1035,54 @@
     }
 
     @media (max-width: 640px) {
+      .modal-overlay {
+        padding: 0;
+        align-items: flex-end; /* Slides up from bottom like native app */
+      }
+      .modal-box {
+        max-width: 100% !important;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        border-left: none;
+        border-right: none;
+        border-bottom: none;
+        max-height: 86vh;
+        padding: 16px 14px;
+        padding-bottom: max(18px, env(safe-area-inset-bottom, 18px));
+        animation: modalSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      @keyframes modalSlideUp {
+        from { transform: translateY(100%); }
+        to { transform: translateY(0); }
+      }
+      .modal-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      .modal-field.full {
+        grid-column: span 1;
+      }
+      .modal-actions {
+        flex-direction: column-reverse;
+        gap: 8px;
+        padding-top: 10px;
+        margin-top: 10px;
+      }
+      .modal-actions > * {
+        width: 100% !important;
+      }
+      .modal-actions div {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        width: 100%;
+      }
+      .modal-btn {
+        width: 100%;
+        padding: 12px 14px;
+        font-size: 0.95rem;
+        min-height: 44px; /* iOS Human Interface Guidelines tap target */
+      }
       .exercise-card {
         grid-template-columns: auto auto auto 1fr;
         padding-right: 48px;
@@ -968,6 +1103,21 @@
         right: 10px;
         left: 10px;
         justify-content: space-between;
+      }
+      .sync-banner {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .sync-actions {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+      .sync-actions .sync-btn {
+        grid-column: span 2;
+        justify-content: center;
+        padding: 11px;
       }
     }
   </style>
@@ -1844,62 +1994,64 @@
     </div>
   </div>
 <!-- Add Exercise Modal Dialog -->
-<div class="modal-overlay" id="addExerciseModal">
+<div class="modal-overlay" id="addExerciseModal" onclick="if(event.target === this) closeAddExerciseModal()">
   <div class="modal-box">
     <div class="modal-header">
       <h3>➕ เพิ่มท่าฝึกใหม่ลงในตาราง</h3>
-      <button class="modal-close-btn" onclick="closeAddExerciseModal()">&times;</button>
+      <button class="modal-close-btn" onclick="closeAddExerciseModal()" title="ปิดหน้าต่าง">&times;</button>
     </div>
     
-    <div class="modal-grid">
-      <div class="modal-field">
-        <label for="newExDay">วันฝึกที่ต้องการเพิ่ม</label>
-        <select id="newExDay">
-          <option value="tue">วันอังคาร: Upper Body A</option>
-          <option value="wed">วันพุธ: Lower Body &amp; Core A</option>
-          <option value="fri">วันศุกร์: Upper Body B</option>
-          <option value="sat">วันเสาร์: Lower Body &amp; Core B</option>
-        </select>
-      </div>
+    <div class="modal-body-scroll">
+      <div class="modal-grid">
+        <div class="modal-field">
+          <label for="newExDay">วันฝึกที่ต้องการเพิ่ม</label>
+          <select id="newExDay">
+            <option value="tue">วันอังคาร: Upper Body A</option>
+            <option value="wed">วันพุธ: Lower Body &amp; Core A</option>
+            <option value="fri">วันศุกร์: Upper Body B</option>
+            <option value="sat">วันเสาร์: Lower Body &amp; Core B</option>
+          </select>
+        </div>
 
-      <div class="modal-field">
-        <label for="newExCategory">หมวดหมู่ท่าฝึก (Category)</label>
-        <input type="text" id="newExCategory" placeholder="เช่น Shoulders / Biceps / Core" value="Calisthenics / Strength">
-      </div>
+        <div class="modal-field">
+          <label for="newExCategory">หมวดหมู่ท่าฝึก (Category)</label>
+          <input type="text" id="newExCategory" placeholder="เช่น Shoulders / Biceps / Core" value="Calisthenics / Strength">
+        </div>
 
-      <div class="modal-field full">
-        <label for="newExName">ชื่อท่าฝึก (Exercise Name) *</label>
-        <input type="text" id="newExName" placeholder="เช่น Incline Dumbbell Curl หรือ Pike Press" required>
-      </div>
+        <div class="modal-field full">
+          <label for="newExName">ชื่อท่าฝึก (Exercise Name) *</label>
+          <input type="text" id="newExName" placeholder="เช่น Incline Dumbbell Curl หรือ Pike Press" required>
+        </div>
 
-      <div class="modal-field">
-        <label for="newExSets">จำนวนเซ็ตเป้าหมาย</label>
-        <input type="text" id="newExSets" placeholder="เช่น 3 หรือ 3-4" value="3">
-      </div>
+        <div class="modal-field">
+          <label for="newExSets">จำนวนเซ็ตเป้าหมาย</label>
+          <input type="text" id="newExSets" placeholder="เช่น 3 หรือ 3-4" value="3">
+        </div>
 
-      <div class="modal-field">
-        <label for="newExReps">จำนวนเรปเป้าหมาย</label>
-        <input type="text" id="newExReps" placeholder="เช่น 8-12 ครั้ง หรือ 10-12" value="8-12">
-      </div>
+        <div class="modal-field">
+          <label for="newExReps">จำนวนเรปเป้าหมาย</label>
+          <input type="text" id="newExReps" placeholder="เช่น 8-12 ครั้ง หรือ 10-12" value="8-12">
+        </div>
 
-      <div class="modal-field">
-        <label for="newExRest">เวลาพักระหว่างเซ็ต</label>
-        <input type="text" id="newExRest" placeholder="เช่น 60 วิ หรือ 90 วิ" value="60-90 วิ">
-      </div>
+        <div class="modal-field">
+          <label for="newExRest">เวลาพักระหว่างเซ็ต</label>
+          <input type="text" id="newExRest" placeholder="เช่น 60 วิ หรือ 90 วิ" value="60-90 วิ">
+        </div>
 
-      <div class="modal-field">
-        <label for="newExPR">สถิติปัจจุบัน (Current PR)</label>
-        <input type="text" id="newExPR" placeholder="เช่น 8-10 reps หรือ BW x 10" value="8-10 reps">
-      </div>
+        <div class="modal-field">
+          <label for="newExPR">สถิติปัจจุบัน (Current PR)</label>
+          <input type="text" id="newExPR" placeholder="เช่น 8-10 reps หรือ BW x 10" value="8-10 reps">
+        </div>
 
-      <div class="modal-field full">
-        <label for="newExTarget">เป้าหมายสถิติถัดไป (Target PR)</label>
-        <input type="text" id="newExTarget" placeholder="เช่น +1 rep / +2.5 kg" value="+1 rep / +2.5 kg">
-      </div>
+        <div class="modal-field full">
+          <label for="newExTarget">เป้าหมายสถิติถัดไป (Target PR)</label>
+          <input type="text" id="newExTarget" placeholder="เช่น +1 rep / +2.5 kg" value="+1 rep / +2.5 kg">
+        </div>
 
-      <div class="modal-field full">
-        <label for="newExNotes">คำแนะนำเทคนิค / การจัดฟอร์ม (Coaching Cue)</label>
-        <input type="text" id="newExNotes" placeholder="เช่น ข้อศอกแนบลำตัว ควบคุมจังหวะลง 2-3 วิ" value="โฟกัสฟอร์มคลีน ควบคุมจังหวะการเคลื่อนไหว">
+        <div class="modal-field full">
+          <label for="newExNotes">คำแนะนำเทคนิค / การจัดฟอร์ม (Coaching Cue)</label>
+          <input type="text" id="newExNotes" placeholder="เช่น ข้อศอกแนบลำตัว ควบคุมจังหวะลง 2-3 วิ" value="โฟกัสฟอร์มคลีน ควบคุมจังหวะการเคลื่อนไหว">
+        </div>
       </div>
     </div>
 
@@ -1911,49 +2063,54 @@
 </div>
 
 <!-- Cloud Settings Modal Dialog -->
-<div class="modal-overlay" id="cloudSettingsModal">
+<div class="modal-overlay" id="cloudSettingsModal" onclick="if(event.target === this) closeCloudModal()">
   <div class="modal-box" style="max-width: 580px;">
     <div class="modal-header">
       <h3 style="display: flex; align-items: center; gap: 8px;">☁️ ตั้งค่า Cloud Sync (GitHub Gist)</h3>
-      <button class="modal-close-btn" onclick="closeCloudModal()">&times;</button>
+      <button class="modal-close-btn" onclick="closeCloudModal()" title="ปิดหน้าต่าง">&times;</button>
     </div>
-    <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 16px; line-height: 1.5;">
-      เชื่อมต่อฐานข้อมูลบน GitHub Gist ส่วนตัวของคุณ เพื่อให้สามารถบันทึกการออกกำลังกายจากมือถือ และดึงข้อมูลมาอัปเดตไฟล์ Excel บนคอมพิวเตอร์ได้อย่างสมบูรณ์แบบ
-    </p>
-    
-    <div class="modal-grid">
-      <div class="modal-field full">
-        <label for="cloudTokenInput">1. GitHub Personal Access Token (PAT) *</label>
-        <div style="position: relative;">
-          <input type="password" id="cloudTokenInput" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx หรือ github_pat_..." style="padding-right: 42px;">
-          <button type="button" onclick="toggleTokenVisibility()" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.1rem; padding: 4px;" title="แสดง/ซ่อน Token">👁️</button>
+
+    <div class="modal-body-scroll">
+      <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 14px; line-height: 1.5;">
+        เชื่อมต่อฐานข้อมูลบน GitHub Gist ส่วนตัวของคุณ เพื่อให้สามารถบันทึกการออกกำลังกายจากมือถือ และดึงข้อมูลมาอัปเดตไฟล์ Excel บนคอมพิวเตอร์ได้อย่างสมบูรณ์แบบ
+      </p>
+      
+      <div class="modal-grid">
+        <div class="modal-field full">
+          <label for="cloudTokenInput">1. GitHub Personal Access Token (PAT) *</label>
+          <div style="position: relative;">
+            <input type="password" id="cloudTokenInput" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx หรือ github_pat_..." style="padding-right: 42px;">
+            <button type="button" onclick="toggleTokenVisibility()" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.1rem; padding: 4px;" title="แสดง/ซ่อน Token">👁️</button>
+          </div>
+          <div style="margin-top: 6px; font-size: 0.82rem;">
+            <a href="https://github.com/settings/tokens/new?description=Calisthenics+Tracker&scopes=gist" target="_blank" style="color: var(--accent-cyan); text-decoration: none;">
+              🔗 คลิกที่นี่เพื่อสร้าง GitHub Token (ระบบเลือกสิทธิ์ gist ให้อัตโนมัติ)
+            </a>
+          </div>
         </div>
-        <div style="margin-top: 6px; font-size: 0.82rem;">
-          <a href="https://github.com/settings/tokens/new?description=Calisthenics+Tracker&scopes=gist" target="_blank" style="color: var(--accent-cyan); text-decoration: none;">
-            🔗 คลิกที่นี่เพื่อสร้าง GitHub Token (ระบบเลือกสิทธิ์ gist ให้อัตโนมัติ)
-          </a>
+
+        <div class="modal-field full">
+          <label for="cloudGistIdInput">2. GitHub Gist ID (รหัส Gist สำหรับเก็บข้อมูล)</label>
+          <input type="text" id="cloudGistIdInput" placeholder="เช่น 3a5b8c9d0e1f... (เว้นว่างไว้ได้หากต้องการให้ระบบสร้างใหม่อัตโนมัติ)">
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">
+            💡 หากเป็นการตั้งค่าครั้งแรก ให้ใส่เฉพาะ Token แล้วกดปุ่ม <strong>"🚀 สร้าง Gist ใหม่อัตโนมัติ"</strong>
+          </p>
         </div>
       </div>
 
-      <div class="modal-field full">
-        <label for="cloudGistIdInput">2. GitHub Gist ID (รหัส Gist สำหรับเก็บข้อมูล)</label>
-        <input type="text" id="cloudGistIdInput" placeholder="เช่น 3a5b8c9d0e1f... (เว้นว่างไว้ได้หากต้องการให้ระบบสร้างใหม่อัตโนมัติ)">
-        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">
-          💡 หากเป็นการตั้งค่าครั้งแรก ให้ใส่เฉพาะ Token แล้วกดปุ่ม <strong>"🚀 สร้าง Gist ใหม่อัตโนมัติ"</strong> ด้านล่าง
-        </p>
-      </div>
+      <details class="modal-accordion">
+        <summary>💡 ดูคำแนะนำการใช้งานบนมือถือ (คลิกเพื่อเปิด/ปิด)</summary>
+        <div class="modal-accordion-content">
+          <ol style="padding-left: 20px; margin: 0; line-height: 1.6;">
+            <li>ตั้งค่าบน PC ครั้งแรกแล้วกดปุ่มสร้าง Gist</li>
+            <li>กดปุ่ม <strong>"📋 คัดลอกลิงก์มือถือ"</strong> ส่งเข้ามือถือ (LINE / Notes)</li>
+            <li>เปิดลิงก์บนมือถือ แล้วกรอก GitHub Token ครั้งเดียว ระบบจะจำไว้ตลอด</li>
+          </ol>
+        </div>
+      </details>
     </div>
 
-    <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid var(--card-border); border-radius: 10px; padding: 12px 14px; margin-top: 14px; font-size: 0.84rem;">
-      <strong style="color: var(--accent-amber); display: block; margin-bottom: 4px;">📱 คำแนะนำสำหรับการใช้งานบนมือถือ:</strong>
-      <ol style="padding-left: 20px; color: var(--text-muted); line-height: 1.55;">
-        <li>ตั้งค่าบน PC ครั้งแรกแล้วกดปุ่มสร้าง Gist</li>
-        <li>กดปุ่ม <strong>"📋 คัดลอกลิงก์มือถือ"</strong> ส่งเข้ามือถือ (LINE / Notes)</li>
-        <li>เปิดลิงก์บนมือถือ แล้วกรอก GitHub Token ครั้งเดียว ระบบจะจำไว้ตลอด</li>
-      </ol>
-    </div>
-
-    <div class="modal-actions" style="margin-top: 20px; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+    <div class="modal-actions" style="justify-content: space-between; flex-wrap: wrap; gap: 8px;">
       <button type="button" class="modal-btn secondary" onclick="disconnectCloud()" style="color: #fda4af; border: 1px solid rgba(244,63,94,0.3); font-size: 0.82rem;">🗑️ ล้าง Token</button>
       <div style="display: flex; gap: 8px; flex-wrap: wrap;">
         <button type="button" class="modal-btn" onclick="copyMobileLink()" style="background: rgba(255,255,255,0.08); color: #fff; font-size: 0.85rem;">📋 คัดลอกลิงก์มือถือ</button>
