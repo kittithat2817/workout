@@ -680,14 +680,12 @@
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0, 0, 0, 0.78);
-      backdrop-filter: blur(6px);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       z-index: 1000;
       align-items: center;
       justify-content: center;
-      padding: 16px;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      cursor: pointer;
+      padding: 20px;
     }
 
     .modal-overlay.active {
@@ -699,14 +697,13 @@
       border: 1px solid var(--card-border);
       border-radius: 18px;
       width: 100%;
-      max-width: 540px;
-      padding: 22px;
-      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.7);
+      max-width: 560px;
+      box-shadow: 0 24px 50px rgba(0, 0, 0, 0.75);
       animation: modalFadeIn 0.2s ease-out;
-      cursor: default;
-      max-height: calc(100vh - 36px);
       display: flex;
       flex-direction: column;
+      max-height: calc(100vh - 40px);
+      overflow: hidden;
       box-sizing: border-box;
     }
 
@@ -719,18 +716,19 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 14px;
+      padding: 16px 22px;
       border-bottom: 1px solid var(--card-border);
-      padding-bottom: 12px;
+      background: var(--card-bg);
       flex-shrink: 0;
     }
 
     .modal-header h3 {
-      font-size: 1.2rem;
+      font-size: 1.18rem;
       color: #fff;
       display: flex;
       align-items: center;
       gap: 8px;
+      margin: 0;
     }
 
     .modal-close-btn {
@@ -740,8 +738,8 @@
       font-size: 1.4rem;
       cursor: pointer;
       line-height: 1;
-      width: 36px;
-      height: 36px;
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -761,7 +759,8 @@
     .modal-body-scroll {
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
-      padding-right: 6px;
+      touch-action: pan-y;
+      padding: 18px 22px;
       flex: 1;
       overscroll-behavior: contain;
     }
@@ -822,7 +821,7 @@
     }
 
     .modal-accordion summary {
-      padding: 10px 14px;
+      padding: 11px 14px;
       cursor: pointer;
       color: var(--accent-amber);
       font-weight: 600;
@@ -847,13 +846,14 @@
       padding-top: 8px;
     }
 
-    .modal-actions {
+    /* Sticky Footer Bar for Action Buttons */
+    .modal-footer-sticky {
       display: flex;
+      gap: 10px;
       justify-content: flex-end;
-      gap: 8px;
-      margin-top: 14px;
+      padding: 14px 22px;
       border-top: 1px solid var(--card-border);
-      padding-top: 14px;
+      background: rgba(15, 23, 42, 0.96);
       flex-shrink: 0;
     }
 
@@ -1036,52 +1036,87 @@
 
     @media (max-width: 640px) {
       .modal-overlay {
-        padding: 0;
-        align-items: flex-end; /* Slides up from bottom like native app */
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        width: 100vw !important;
+        height: 100% !important;
+        height: 100dvh !important;
+        padding: 0 !important;
+        align-items: stretch !important;
+        justify-content: stretch !important;
+        background: #0f172a !important; /* Full screen native dark bg */
       }
       .modal-box {
         max-width: 100% !important;
-        border-bottom-left-radius: 0;
-        border-bottom-right-radius: 0;
-        border-left: none;
-        border-right: none;
-        border-bottom: none;
-        max-height: 86vh;
-        padding: 16px 14px;
-        padding-bottom: max(18px, env(safe-area-inset-bottom, 18px));
-        animation: modalSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        max-height: 100vh !important;
+        max-height: 100dvh !important;
+        height: 100% !important;
+        height: 100dvh !important;
+        border-radius: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+        display: flex !important;
+        flex-direction: column !important;
+        animation: none !important;
+        padding: 0 !important;
       }
-      @keyframes modalSlideUp {
-        from { transform: translateY(100%); }
-        to { transform: translateY(0); }
+      .modal-header {
+        padding: 14px 18px !important;
+        background: rgba(30, 41, 59, 0.98) !important;
+        border-bottom: 1px solid var(--card-border) !important;
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 50 !important;
+      }
+      .modal-header h3 {
+        font-size: 1.05rem !important;
+      }
+      .modal-close-btn {
+        width: 38px !important;
+        height: 38px !important;
+        font-size: 1.35rem !important;
+        background: rgba(255, 255, 255, 0.12) !important;
+      }
+      .modal-body-scroll {
+        padding: 18px 16px !important;
+        padding-bottom: 140px !important; /* Space so bottom content is never hidden behind sticky bar */
+        overflow-y: scroll !important;
+        -webkit-overflow-scrolling: touch !important;
+        touch-action: pan-y !important;
+        flex: 1 1 auto !important;
       }
       .modal-grid {
-        grid-template-columns: 1fr;
-        gap: 10px;
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
       }
       .modal-field.full {
-        grid-column: span 1;
+        grid-column: span 1 !important;
       }
-      .modal-actions {
-        flex-direction: column-reverse;
-        gap: 8px;
-        padding-top: 10px;
-        margin-top: 10px;
+      .modal-footer-sticky {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 8px !important;
+        padding: 12px 16px !important;
+        padding-bottom: max(16px, env(safe-area-inset-bottom, 16px)) !important;
+        background: rgba(15, 23, 42, 0.98) !important;
+        backdrop-filter: blur(12px) !important;
+        -webkit-backdrop-filter: blur(12px) !important;
+        border-top: 1px solid var(--card-border) !important;
+        z-index: 100 !important;
+        box-shadow: 0 -8px 25px rgba(0, 0, 0, 0.6) !important;
       }
-      .modal-actions > * {
+      .modal-footer-sticky button {
         width: 100% !important;
-      }
-      .modal-actions div {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        width: 100%;
-      }
-      .modal-btn {
-        width: 100%;
-        padding: 12px 14px;
-        font-size: 0.95rem;
-        min-height: 44px; /* iOS Human Interface Guidelines tap target */
+        min-height: 48px !important;
+        font-size: 1rem !important;
+        border-radius: 10px !important;
       }
       .exercise-card {
         grid-template-columns: auto auto auto 1fr;
@@ -2055,7 +2090,7 @@
       </div>
     </div>
 
-    <div class="modal-actions">
+    <div class="modal-footer-sticky">
       <button class="modal-btn secondary" onclick="closeAddExerciseModal()">ยกเลิก</button>
       <button class="modal-btn primary" onclick="submitNewExercise()">💾 บันทึกท่าฝึก &amp; อัปเดต PR Tracker</button>
     </div>
@@ -2064,7 +2099,7 @@
 
 <!-- Cloud Settings Modal Dialog -->
 <div class="modal-overlay" id="cloudSettingsModal" onclick="if(event.target === this) closeCloudModal()">
-  <div class="modal-box" style="max-width: 580px;">
+  <div class="modal-box">
     <div class="modal-header">
       <h3 style="display: flex; align-items: center; gap: 8px;">☁️ ตั้งค่า Cloud Sync (GitHub Gist)</h3>
       <button class="modal-close-btn" onclick="closeCloudModal()" title="ปิดหน้าต่าง">&times;</button>
@@ -2093,9 +2128,15 @@
           <label for="cloudGistIdInput">2. GitHub Gist ID (รหัส Gist สำหรับเก็บข้อมูล)</label>
           <input type="text" id="cloudGistIdInput" placeholder="เช่น 3a5b8c9d0e1f... (เว้นว่างไว้ได้หากต้องการให้ระบบสร้างใหม่อัตโนมัติ)">
           <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">
-            💡 หากเป็นการตั้งค่าครั้งแรก ให้ใส่เฉพาะ Token แล้วกดปุ่ม <strong>"🚀 สร้าง Gist ใหม่อัตโนมัติ"</strong>
+            💡 หากเป็นการตั้งค่าครั้งแรก ให้ใส่เฉพาะ Token แล้วกดปุ่ม <strong>"🚀 สร้าง Gist ใหม่อัตโนมัติ"</strong> ด้านล่าง
           </p>
         </div>
+      </div>
+
+      <!-- Secondary Actions inside scrollable content -->
+      <div style="display: flex; gap: 10px; margin-top: 14px; margin-bottom: 14px; flex-wrap: wrap;">
+        <button type="button" class="modal-btn" onclick="copyMobileLink()" style="background: rgba(255,255,255,0.08); color: #fff; flex: 1; min-height: 42px;">📋 คัดลอกลิงก์มือถือ</button>
+        <button type="button" class="modal-btn secondary" onclick="disconnectCloud()" style="color: #fda4af; border: 1px solid rgba(244,63,94,0.3); min-height: 42px;">🗑️ ล้าง Token</button>
       </div>
 
       <details class="modal-accordion">
@@ -2110,13 +2151,10 @@
       </details>
     </div>
 
-    <div class="modal-actions" style="justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-      <button type="button" class="modal-btn secondary" onclick="disconnectCloud()" style="color: #fda4af; border: 1px solid rgba(244,63,94,0.3); font-size: 0.82rem;">🗑️ ล้าง Token</button>
-      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-        <button type="button" class="modal-btn" onclick="copyMobileLink()" style="background: rgba(255,255,255,0.08); color: #fff; font-size: 0.85rem;">📋 คัดลอกลิงก์มือถือ</button>
-        <button type="button" class="modal-btn" id="autoCreateGistBtn" onclick="handleAutoCreateGist()" style="background: linear-gradient(135deg, #10b981, #059669); color: #fff; font-weight: 700;">🚀 สร้าง Gist อัตโนมัติ</button>
-        <button type="button" class="modal-btn primary" id="saveCloudBtn" onclick="handleSaveCloudConfig()">💾 บันทึก &amp; ดึงข้อมูล</button>
-      </div>
+    <!-- Pinned Sticky Action Bar on Bottom -->
+    <div class="modal-footer-sticky">
+      <button type="button" class="modal-btn primary" id="saveCloudBtn" onclick="handleSaveCloudConfig()" style="font-weight: 700;">💾 บันทึก &amp; ดึงข้อมูล</button>
+      <button type="button" class="modal-btn" id="autoCreateGistBtn" onclick="handleAutoCreateGist()" style="background: linear-gradient(135deg, #10b981, #059669); color: #fff; font-weight: 700;">🚀 สร้าง Gist อัตโนมัติ</button>
     </div>
   </div>
 </div>
