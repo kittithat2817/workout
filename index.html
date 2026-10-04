@@ -846,6 +846,28 @@
       padding-top: 8px;
     }
 
+    /* Cloud Provider Tab Switcher */
+    .provider-tab-btn {
+      flex: 1;
+      padding: 10px 12px;
+      border-radius: 9px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+      text-align: center;
+    }
+    .provider-tab-btn.active {
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      color: #fff;
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+    }
+
     /* Sticky Footer Bar for Action Buttons */
     .modal-footer-sticky {
       display: flex;
@@ -2101,58 +2123,108 @@
 <div class="modal-overlay" id="cloudSettingsModal" onclick="if(event.target === this) closeCloudModal()">
   <div class="modal-box">
     <div class="modal-header">
-      <h3 style="display: flex; align-items: center; gap: 8px;">☁️ ตั้งค่า Cloud Sync (GitHub Gist)</h3>
+      <h3 style="display: flex; align-items: center; gap: 8px;">☁️ ตั้งค่า Cloud Sync</h3>
       <button class="modal-close-btn" onclick="closeCloudModal()" title="ปิดหน้าต่าง">&times;</button>
     </div>
 
     <div class="modal-body-scroll">
-      <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 14px; line-height: 1.5;">
-        เชื่อมต่อฐานข้อมูลบน GitHub Gist ส่วนตัวของคุณ เพื่อให้สามารถบันทึกการออกกำลังกายจากมือถือ และดึงข้อมูลมาอัปเดตไฟล์ Excel บนคอมพิวเตอร์ได้อย่างสมบูรณ์แบบ
-      </p>
-      
-      <div class="modal-grid">
-        <div class="modal-field full">
-          <label for="cloudTokenInput">1. GitHub Personal Access Token (PAT) *</label>
-          <div style="position: relative;">
-            <input type="password" id="cloudTokenInput" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx หรือ github_pat_..." style="padding-right: 42px;">
-            <button type="button" onclick="toggleTokenVisibility()" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.1rem; padding: 4px;" title="แสดง/ซ่อน Token">👁️</button>
-          </div>
-          <div style="margin-top: 6px; font-size: 0.82rem;">
-            <a href="https://github.com/settings/tokens/new?description=Calisthenics+Tracker&scopes=gist" target="_blank" style="color: var(--accent-cyan); text-decoration: none;">
-              🔗 คลิกที่นี่เพื่อสร้าง GitHub Token (ระบบเลือกสิทธิ์ gist ให้อัตโนมัติ)
-            </a>
-          </div>
-        </div>
-
-        <div class="modal-field full">
-          <label for="cloudGistIdInput">2. GitHub Gist ID (รหัส Gist สำหรับเก็บข้อมูล)</label>
-          <input type="text" id="cloudGistIdInput" placeholder="เช่น 3a5b8c9d0e1f... (เว้นว่างไว้ได้หากต้องการให้ระบบสร้างใหม่อัตโนมัติ)">
-          <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">
-            💡 หากเป็นการตั้งค่าครั้งแรก ให้ใส่เฉพาะ Token แล้วกดปุ่ม <strong>"🚀 สร้าง Gist ใหม่อัตโนมัติ"</strong> ด้านล่าง
-          </p>
-        </div>
+      <!-- Provider Tab Switcher -->
+      <div style="display: flex; gap: 6px; margin-bottom: 16px; background: rgba(0, 0, 0, 0.35); padding: 5px; border-radius: 12px; border: 1px solid var(--card-border);">
+        <button type="button" class="provider-tab-btn active" id="tabGoogleSheetsBtn" onclick="switchCloudTab('googlesheets')">
+          📊 Google Sheets (แนะนำ)
+        </button>
+        <button type="button" class="provider-tab-btn" id="tabGithubGistBtn" onclick="switchCloudTab('gist')">
+          🐙 GitHub Gist
+        </button>
       </div>
 
-      <!-- Secondary Actions inside scrollable content -->
-      <div style="display: flex; gap: 10px; margin-top: 14px; margin-bottom: 14px; flex-wrap: wrap;">
-        <button type="button" class="modal-btn" onclick="copyMobileLink()" style="background: rgba(255,255,255,0.08); color: #fff; flex: 1; min-height: 42px;">📋 คัดลอกลิงก์มือถือ</button>
-        <button type="button" class="modal-btn secondary" onclick="disconnectCloud()" style="color: #fda4af; border: 1px solid rgba(244,63,94,0.3); min-height: 42px;">🗑️ ล้าง Token</button>
+      <!-- PANEL 1: GOOGLE SHEETS -->
+      <div id="panelGoogleSheets">
+        <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 14px; line-height: 1.5;">
+          เชื่อมต่อตรงกับ Google Sheets บนไดรฟ์ของคุณโดยไม่ต้องเปิดคอมพิวเตอร์! ระบบจะบันทึกผลการฝึกเข้าตารางหลักและแท็บประวัติ (Workout History) อัตโนมัติ
+        </p>
+
+        <div class="modal-grid">
+          <div class="modal-field full">
+            <label for="googleSheetUrlInput">Google Apps Script Web App URL *</label>
+            <input type="url" id="googleSheetUrlInput" placeholder="https://script.google.com/macros/s/AKfycb.../exec">
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">
+              💡 นำ URL ที่ได้จากการกด <strong>Deploy &gt; Web app</strong> ใน Google Sheets มาวางที่นี่
+            </p>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-top: 10px; margin-bottom: 14px; flex-wrap: wrap;">
+          <button type="button" class="modal-btn" onclick="testGoogleSheetConnection()" style="background: rgba(14, 165, 233, 0.18); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); flex: 1; min-height: 42px;">⚡ ทดสอบการเชื่อมต่อ</button>
+          <button type="button" class="modal-btn" onclick="loadFromGoogleSheet(true)" style="background: rgba(255,255,255,0.08); color: #fff; flex: 1; min-height: 42px;">📥 ดึงข้อมูลจากชีต</button>
+        </div>
+
+        <details class="modal-accordion">
+          <summary>📖 วิธีติดตั้งสคริปต์บน Google Sheets (คลิกเพื่อดูวิธีทำ 4 ขั้นตอน)</summary>
+          <div class="modal-accordion-content">
+            <ol style="padding-left: 20px; margin: 0; line-height: 1.7; font-size: 0.86rem;">
+              <li>เปิดไฟล์บน Google Drive แล้วกด <strong>ไฟล์ (File) &gt; บันทึกเป็น Google ชีต (Save as Google Sheets)</strong></li>
+              <li>ไปที่เมนู <strong>ส่วนขยาย (Extensions) &gt; Apps Script</strong></li>
+              <li>ลบโค้ดเดิมทั้งหมด แล้วคัดลอกโค้ดจากไฟล์ <code>google_apps_script.js</code> ไปวาง แล้วกดเซฟ 💾</li>
+              <li>กดปุ่มสีน้ำเงิน <strong>ทำให้ใช้งานได้ (Deploy) &gt; การทำให้ใช้งานได้ใหม่</strong> เลือกประเภท <strong>เว็บแอป (Web app)</strong> กำหนดสิทธิ์เป็น <strong>ทุกคน (Anyone)</strong> แล้วกด Deploy จะได้รับ URL มาวางในช่องด้านบน</li>
+            </ol>
+          </div>
+        </details>
       </div>
 
-      <details class="modal-accordion">
-        <summary>💡 ดูคำแนะนำการใช้งานบนมือถือ (คลิกเพื่อเปิด/ปิด)</summary>
-        <div class="modal-accordion-content">
-          <ol style="padding-left: 20px; margin: 0; line-height: 1.6;">
-            <li>ตั้งค่าบน PC ครั้งแรกแล้วกดปุ่มสร้าง Gist</li>
-            <li>กดปุ่ม <strong>"📋 คัดลอกลิงก์มือถือ"</strong> ส่งเข้ามือถือ (LINE / Notes)</li>
-            <li>เปิดลิงก์บนมือถือ แล้วกรอก GitHub Token ครั้งเดียว ระบบจะจำไว้ตลอด</li>
-          </ol>
+      <!-- PANEL 2: GITHUB GIST -->
+      <div id="panelGithubGist" style="display: none;">
+        <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 14px; line-height: 1.5;">
+          เชื่อมต่อฐานข้อมูลบน GitHub Gist ส่วนตัวของคุณ เพื่อซิงก์ข้อมูลระหว่างมือถือและคอมพิวเตอร์
+        </p>
+        
+        <div class="modal-grid">
+          <div class="modal-field full">
+            <label for="cloudTokenInput">1. GitHub Personal Access Token (PAT) *</label>
+            <div style="position: relative;">
+              <input type="password" id="cloudTokenInput" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx หรือ github_pat_..." style="padding-right: 42px;">
+              <button type="button" onclick="toggleTokenVisibility()" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1.1rem; padding: 4px;" title="แสดง/ซ่อน Token">👁️</button>
+            </div>
+            <div style="margin-top: 6px; font-size: 0.82rem;">
+              <a href="https://github.com/settings/tokens/new?description=Calisthenics+Tracker&scopes=gist" target="_blank" style="color: var(--accent-cyan); text-decoration: none;">
+                🔗 คลิกที่นี่เพื่อสร้าง GitHub Token (ระบบเลือกสิทธิ์ gist ให้อัตโนมัติ)
+              </a>
+            </div>
+          </div>
+
+          <div class="modal-field full">
+            <label for="cloudGistIdInput">2. GitHub Gist ID (รหัส Gist สำหรับเก็บข้อมูล)</label>
+            <input type="text" id="cloudGistIdInput" placeholder="เช่น 3a5b8c9d0e1f... (เว้นว่างไว้ได้หากต้องการให้ระบบสร้างใหม่อัตโนมัติ)">
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">
+              💡 หากเป็นการตั้งค่าครั้งแรก ให้ใส่เฉพาะ Token แล้วกดปุ่ม <strong>"🚀 สร้าง Gist ใหม่อัตโนมัติ"</strong> ด้านล่าง
+            </p>
+          </div>
         </div>
-      </details>
+
+        <div style="display: flex; gap: 10px; margin-top: 14px; margin-bottom: 14px; flex-wrap: wrap;">
+          <button type="button" class="modal-btn" onclick="copyMobileLink()" style="background: rgba(255,255,255,0.08); color: #fff; flex: 1; min-height: 42px;">📋 คัดลอกลิงก์มือถือ</button>
+          <button type="button" class="modal-btn secondary" onclick="disconnectCloud()" style="color: #fda4af; border: 1px solid rgba(244,63,94,0.3); min-height: 42px;">🗑️ ล้าง Token</button>
+        </div>
+
+        <details class="modal-accordion">
+          <summary>💡 ดูคำแนะนำการใช้งานบนมือถือ (คลิกเพื่อเปิด/ปิด)</summary>
+          <div class="modal-accordion-content">
+            <ol style="padding-left: 20px; margin: 0; line-height: 1.6;">
+              <li>ตั้งค่าบน PC ครั้งแรกแล้วกดปุ่มสร้าง Gist</li>
+              <li>กดปุ่ม <strong>"📋 คัดลอกลิงก์มือถือ"</strong> ส่งเข้ามือถือ (LINE / Notes)</li>
+              <li>เปิดลิงก์บนมือถือ แล้วกรอก GitHub Token ครั้งเดียว ระบบจะจำไว้ตลอด</li>
+            </ol>
+          </div>
+        </details>
+      </div>
     </div>
 
     <!-- Pinned Sticky Action Bar on Bottom -->
-    <div class="modal-footer-sticky">
+    <div class="modal-footer-sticky" id="footerGoogleSheets">
+      <button type="button" class="modal-btn primary" id="saveGoogleSheetBtn" onclick="handleSaveGoogleSheetConfig()" style="font-weight: 700; width: 100%; min-height: 46px; background: linear-gradient(135deg, #0284c7, #0369a1);">💾 บันทึกการเชื่อมต่อ Google Sheets</button>
+    </div>
+
+    <div class="modal-footer-sticky" id="footerGithubGist" style="display: none;">
       <button type="button" class="modal-btn primary" id="saveCloudBtn" onclick="handleSaveCloudConfig()" style="font-weight: 700;">💾 บันทึก &amp; ดึงข้อมูล</button>
       <button type="button" class="modal-btn" id="autoCreateGistBtn" onclick="handleAutoCreateGist()" style="background: linear-gradient(135deg, #10b981, #059669); color: #fff; font-weight: 700;">🚀 สร้าง Gist อัตโนมัติ</button>
     </div>
@@ -2433,8 +2505,219 @@
     }
   }
 
+  // ==========================================
+  // GOOGLE SHEETS & CLOUD PROVIDER ENGINE
+  // ==========================================
+  let activeCloudProvider = localStorage.getItem('calis_cloud_provider') || (localStorage.getItem('calis_google_sheet_url') ? 'googlesheets' : (localStorage.getItem('calis_gist_id') ? 'gist' : 'googlesheets'));
+
+  function getGoogleSheetUrl() {
+    return (localStorage.getItem('calis_google_sheet_url') || '').trim();
+  }
+
+  function setGoogleSheetUrl(url) {
+    if (url) {
+      localStorage.setItem('calis_google_sheet_url', url.trim());
+    } else {
+      localStorage.removeItem('calis_google_sheet_url');
+    }
+  }
+
+  function switchCloudTab(provider) {
+    activeCloudProvider = provider;
+    localStorage.setItem('calis_cloud_provider', provider);
+
+    const isSheets = provider === 'googlesheets';
+    document.getElementById('tabGoogleSheetsBtn')?.classList.toggle('active', isSheets);
+    document.getElementById('tabGithubGistBtn')?.classList.toggle('active', !isSheets);
+
+    const panelSheets = document.getElementById('panelGoogleSheets');
+    const panelGist = document.getElementById('panelGithubGist');
+    const footerSheets = document.getElementById('footerGoogleSheets');
+    const footerGist = document.getElementById('footerGithubGist');
+
+    if (panelSheets) panelSheets.style.display = isSheets ? 'block' : 'none';
+    if (panelGist) panelGist.style.display = isSheets ? 'none' : 'block';
+    if (footerSheets) footerSheets.style.display = isSheets ? 'flex' : 'none';
+    if (footerGist) footerGist.style.display = isSheets ? 'none' : 'flex';
+  }
+
+  async function testGoogleSheetConnection() {
+    const urlInput = document.getElementById('googleSheetUrlInput');
+    const url = urlInput ? urlInput.value.trim() : getGoogleSheetUrl();
+    if (!url) {
+      alert('กรุณากรอก Google Apps Script Web App URL ก่อนกดทดสอบครับ');
+      return;
+    }
+    setCloudStatus('syncing', 'กำลังทดสอบเชื่อมต่อ Google Sheets...');
+    try {
+      const res = await fetch(`${url}?action=ping`);
+      const data = await res.json();
+      if (data && (data.status === 'ok' || data.status === 'success')) {
+        setCloudStatus('connected', `☁️ Google Sheets: เชื่อมต่อสำเร็จ (${data.spreadsheetTitle || 'พร้อมใช้งาน'})`);
+        alert(`🎉 เชื่อมต่อ Google Sheet สำเร็จ!\n\nชื่อชีต: ${data.spreadsheetTitle || 'Calisthenics Plan'}\nสถานะ: พร้อมบันทึกและซิงค์ข้อมูล`);
+      } else {
+        throw new Error(data.message || 'การตอบกลับไม่ถูกต้อง');
+      }
+    } catch (err) {
+      console.error('Test Sheet Connection:', err);
+      try {
+        await fetch(url, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify({ action: 'test' })
+        });
+        setCloudStatus('connected', '☁️ Google Sheets: เชื่อมต่อสำเร็จ');
+        alert('🎉 เชื่อมต่อ Web App ได้เรียบร้อยแล้ว!');
+      } catch (err2) {
+        setCloudStatus('error', '⚠️ เชื่อมต่อ Google Sheets ไม่สำเร็จ');
+        alert(`❌ ไม่สามารถเชื่อมต่อกับ Google Sheet Web App URL ได้:\n${err.message}\n\nกรุณาตรวจสอบว่าเลือกสิทธิ์ "ผู้ที่มีสิทธิ์เข้าถึง: ทุกคน (Anyone)" ใน Apps Script หรือไม่`);
+      }
+    }
+  }
+
+  async function handleSaveGoogleSheetConfig() {
+    const urlInput = document.getElementById('googleSheetUrlInput');
+    const url = urlInput ? urlInput.value.trim() : '';
+    if (!url) {
+      alert('กรุณากรอก Web App URL ครับ');
+      return;
+    }
+    if (!url.startsWith('https://script.google.com/macros/s/')) {
+      alert('⚠️ URL ดูเหมือนไม่ใช่ Google Apps Script Web App URL\n(ต้องขึ้นต้นด้วย https://script.google.com/macros/s/.../exec)');
+      return;
+    }
+    setGoogleSheetUrl(url);
+    localStorage.setItem('calis_cloud_provider', 'googlesheets');
+    setCloudStatus('connected', '☁️ Google Sheets: บันทึกการตั้งค่าแล้ว');
+    closeCloudModal();
+    alert('✅ บันทึกการเชื่อมต่อ Google Sheets เรียบร้อยแล้ว!\nระบบจะซิงก์ข้อมูลเข้าชีตทุกครั้งที่คุณบันทึกการฝึก');
+    syncToGoogleSheet(false);
+  }
+
+  function extractAllExercisesPayload() {
+    const exercises = [];
+    ['tue', 'wed', 'fri', 'sat'].forEach(dayId => {
+      const container = document.getElementById(dayId);
+      if (!container) return;
+      const dayTitle = container.querySelector('.day-header h3')?.innerText || dayId;
+      const cards = container.querySelectorAll('.exercise-card');
+      cards.forEach((card, idx) => {
+        const name = card.querySelector('h4')?.innerText.trim() || '';
+        const category = card.querySelector('.exercise-category')?.innerText.trim() || '';
+        const metrics = card.querySelector('.metric-pill')?.innerText.trim() || '';
+        const rest = card.querySelector('.metric-rest')?.innerText.replace('⏱ พัก', '').trim() || '';
+        const notes = card.querySelector('.exercise-note')?.innerText.trim() || '';
+        const checkBtn = card.querySelector('.check-btn');
+        const exId = checkBtn?.getAttribute('data-ex-id') || `${dayId}_${idx+1}`;
+        const isDone = checkBtn?.classList.contains('checked') || localStorage.getItem('calis_done_' + exId) === '1';
+
+        const actualWeight = localStorage.getItem(`calis_log_weight_${name}`) || '';
+        const actualReps = localStorage.getItem(`calis_log_reps_${name}`) || '';
+        const actualRPE = localStorage.getItem(`calis_log_rpe_${name}`) || '';
+        const actualNotes = localStorage.getItem(`calis_log_notes_${name}`) || '';
+
+        exercises.push({
+          order: idx + 1,
+          day: dayId,
+          dayName: dayTitle,
+          name: name,
+          category: category,
+          sets: metrics.split('×')[0]?.replace('เซ็ต', '').trim() || '',
+          reps: metrics.split('×')[1]?.trim() || '',
+          rest: rest,
+          notes: notes,
+          completed: isDone,
+          actualWeight: actualWeight,
+          actualReps: actualReps,
+          actualRPE: actualRPE,
+          actualNotes: actualNotes
+        });
+      });
+    });
+    return exercises;
+  }
+
+  async function syncToGoogleSheet(silent = true) {
+    const url = getGoogleSheetUrl();
+    if (!url) return false;
+
+    setCloudStatus('syncing', 'กำลังบันทึกเข้า Google Sheets...');
+    const exercises = extractAllExercisesPayload();
+    const payload = {
+      action: 'sync_all',
+      date: new Date().toLocaleString('th-TH', { timeZone: 'Asia/Bangkok' }),
+      exercises: exercises
+    };
+
+    try {
+      await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      });
+
+      const time = new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+      setCloudStatus('connected', `☁️ Google Sheets: ซิงค์สำเร็จ (${time})`);
+      if (!silent) {
+        alert(`🎉 ซิงค์ข้อมูลเข้า Google Sheets สำเร็จเรียบร้อย!\n(อัปเดตเมื่อ ${time})`);
+      }
+      return true;
+    } catch (err) {
+      console.error('syncToGoogleSheet error:', err);
+      setCloudStatus('error', '⚠️ ซิงค์ Google Sheets ไม่สำเร็จ');
+      if (!silent) {
+        alert('❌ เกิดข้อผิดพลาดในการส่งข้อมูลเข้า Google Sheets');
+      }
+      return false;
+    }
+  }
+
+  async function loadFromGoogleSheet(forceFeedback = false) {
+    const url = getGoogleSheetUrl();
+    if (!url) {
+      alert('ยังไม่ได้ตั้งค่า Google Apps Script Web App URL');
+      return false;
+    }
+
+    setCloudStatus('syncing', 'กำลังดึงข้อมูลจาก Google Sheets...');
+    try {
+      const res = await fetch(`${url}?action=get_data&_t=${Date.now()}`);
+      const result = await res.json();
+      if (result && result.status === 'success' && Array.isArray(result.data)) {
+        result.data.forEach(item => {
+          if (item.name) {
+            if (item.actualWeight) localStorage.setItem(`calis_log_weight_${item.name}`, item.actualWeight);
+            if (item.actualReps) localStorage.setItem(`calis_log_reps_${item.name}`, item.actualReps);
+            if (item.actualRPE) localStorage.setItem(`calis_log_rpe_${item.name}`, item.actualRPE);
+            if (item.actualNotes) localStorage.setItem(`calis_log_notes_${item.name}`, item.actualNotes);
+          }
+        });
+        const time = new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+        setCloudStatus('connected', `☁️ Google Sheets: ตรงกันแล้ว (${time})`);
+        if (forceFeedback) {
+          alert(`✅ ดึงข้อมูลล่าสุดจาก Google Sheets สำเร็จ!\nพบท่าฝึกทั้งหมด ${result.totalExercises || result.data.length} ท่า`);
+        }
+        return true;
+      }
+    } catch (err) {
+      console.error('loadFromGoogleSheet error:', err);
+      setCloudStatus('error', '⚠️ ดึงข้อมูลจาก Google Sheets ไม่สำเร็จ');
+      if (forceFeedback) {
+        alert(`❌ ไม่สามารถดึงข้อมูลจาก Google Sheets ได้:\n${err.message}`);
+      }
+      return false;
+    }
+  }
+
   // Cloud Modal UI Handlers
   function openCloudModal() {
+    const provider = localStorage.getItem('calis_cloud_provider') || (getGoogleSheetUrl() ? 'googlesheets' : (getGitHubConfig().gistId ? 'gist' : 'googlesheets'));
+    switchCloudTab(provider);
+
+    const sheetUrlInput = document.getElementById('googleSheetUrlInput');
+    if (sheetUrlInput) sheetUrlInput.value = getGoogleSheetUrl();
+
     const { token, gistId } = getGitHubConfig();
     const tokenInput = document.getElementById('cloudTokenInput');
     const gistInput = document.getElementById('cloudGistIdInput');
@@ -2628,6 +2911,11 @@
   }
 
   async function syncToCloud() {
+    const provider = localStorage.getItem('calis_cloud_provider') || (getGoogleSheetUrl() ? 'googlesheets' : 'gist');
+    if (provider === 'googlesheets' && getGoogleSheetUrl()) {
+      return await syncToGoogleSheet(true);
+    }
+
     const { token, gistId } = getGitHubConfig();
     if (!gistId) {
       setCloudStatus('disconnected', '☁️ คลาวด์: ยังไม่ได้ตั้งค่า (คลิก "ตั้งค่าคลาวด์")');
@@ -2674,6 +2962,11 @@
   }
 
   async function loadFromCloud(forceFeedback = false) {
+    const provider = localStorage.getItem('calis_cloud_provider') || (getGoogleSheetUrl() ? 'googlesheets' : 'gist');
+    if (provider === 'googlesheets' && getGoogleSheetUrl()) {
+      return await loadFromGoogleSheet(forceFeedback);
+    }
+
     const { token, gistId } = getGitHubConfig();
     if (!gistId) {
       setCloudStatus('disconnected', '☁️ คลาวด์: ยังไม่ได้เชื่อมต่อ (คลิก "ตั้งค่าคลาวด์")');
@@ -3175,13 +3468,19 @@
     const cachedState = getCurrentAppState();
     renderStateToDOM(cachedState);
 
-    // 4. Connect to Cloud Gist
-    const { token, gistId } = getGitHubConfig();
-    if (gistId) {
-      setCloudStatus('syncing', 'กำลังดึงข้อมูลล่าสุดจาก Cloud...');
-      await loadFromCloud(false);
+    // 4. Connect to Cloud (Google Sheets or GitHub Gist)
+    const activeProv = localStorage.getItem('calis_cloud_provider') || (getGoogleSheetUrl() ? 'googlesheets' : 'gist');
+    if (activeProv === 'googlesheets' && getGoogleSheetUrl()) {
+      setCloudStatus('connected', '☁️ Google Sheets: เชื่อมต่อแล้ว');
+      await loadFromGoogleSheet(false);
     } else {
-      setCloudStatus('disconnected', '☁️ คลาวด์ซิงก์: ยังไม่ได้ตั้งค่า (คลิก "ตั้งค่าคลาวด์")');
+      const { token, gistId } = getGitHubConfig();
+      if (gistId) {
+        setCloudStatus('syncing', 'กำลังดึงข้อมูลล่าสุดจาก Cloud...');
+        await loadFromCloud(false);
+      } else {
+        setCloudStatus('disconnected', '☁️ คลาวด์ซิงก์: ยังไม่ได้ตั้งค่า (คลิก "ตั้งค่าคลาวด์")');
+      }
     }
 
     // 5. Check Local Server Status
@@ -3191,8 +3490,10 @@
     // 6. Background cloud sync check every 45s (if window is active)
     setInterval(() => {
       if (document.visibilityState === 'visible' && !document.querySelector('.dragging')) {
-        const { gistId } = getGitHubConfig();
-        if (gistId) {
+        const prov = localStorage.getItem('calis_cloud_provider') || (getGoogleSheetUrl() ? 'googlesheets' : 'gist');
+        if (prov === 'googlesheets' && getGoogleSheetUrl()) {
+          loadFromGoogleSheet(false);
+        } else if (getGitHubConfig().gistId) {
           loadFromCloud(false);
         }
       }
